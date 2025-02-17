@@ -186,6 +186,36 @@ class ContractService {
       throw error;
     }
   }
+
+  async getContractStats() {
+    if (!this.contract) {
+      await this.init();
+    }
+
+    try {
+      // Get total reports count
+      const totalReports = await this.contract.reportCount();
+      
+      // Get verified reports
+      const verifiedReports = await this.contract.getVerifiedReports();
+      
+      // Get contract balance
+      const balance = await this.provider.getBalance(this.contract.target);
+      
+      // Calculate total rewards
+      const totalRewards = verifiedReports.reduce((sum, report) => sum + Number(report.reward), 0);
+
+      return {
+        totalReports: Number(totalReports),
+        verifiedCount: verifiedReports.length,
+        totalRewards: ethers.formatEther(totalRewards.toString()),
+        contractBalance: ethers.formatEther(balance)
+      };
+    } catch (error) {
+      console.error('Error getting contract stats:', error);
+      throw error;
+    }
+  }
 }
 
 export default new ContractService(); 

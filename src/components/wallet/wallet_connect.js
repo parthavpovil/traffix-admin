@@ -57,25 +57,29 @@ const WalletConnect = ({ onConnect }) => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex items-center justify-center">
-      <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8">
+    <div className="min-h-screen bg-gradient-to-b from-blue-50 to-white flex items-center justify-center p-4">
+      <div className="max-w-3xl w-full bg-white rounded-2xl shadow-2xl p-8 md:p-12">
         <div className="text-center">
-          <AnimatedLogoSVG className="w-24 h-24 mx-auto mb-4" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+          <div className="w-48 h-48 mx-auto mb-8 animate-float">
+            <AnimatedLogoSVG className="w-full h-full" />
+          </div>
+
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
             Welcome to Traffic Report
-          </h2>
-          <p className="text-gray-600 mb-8">
+          </h1>
+          
+          <p className="text-xl text-gray-600 mb-12">
             Connect your wallet to access the dashboard
           </p>
 
           {error && (
-            <div className="bg-red-50 text-red-700 p-4 rounded-lg mb-6">
+            <div className="bg-red-50 text-red-700 p-6 rounded-xl mb-8 text-lg">
               {error}
             </div>
           )}
 
           {success && (
-            <div className="bg-green-50 text-green-700 p-4 rounded-lg mb-6">
+            <div className="bg-green-50 text-green-700 p-6 rounded-xl mb-8 text-lg">
               {success}
             </div>
           )}
@@ -84,22 +88,70 @@ const WalletConnect = ({ onConnect }) => {
             onClick={connectWallet}
             disabled={isConnecting}
             className={`
-              w-full py-3 px-4 rounded-lg text-white font-medium
-              ${isConnecting ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-600 hover:bg-blue-700'}
-              transition-colors duration-200
+              w-full max-w-md mx-auto
+              py-6 px-8 rounded-xl
+              text-xl font-semibold
+              transition-all duration-200
+              transform hover:scale-105
+              flex items-center justify-center gap-4
+              ${isConnecting 
+                ? 'bg-gray-400 cursor-not-allowed' 
+                : 'bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white shadow-lg hover:shadow-xl'
+              }
             `}
           >
-            {isConnecting ? 'Connecting...' : 'Connect Wallet'}
+            <svg 
+              width="32" 
+              height="32" 
+              viewBox="0 0 35 33" 
+              fill="none" 
+              xmlns="http://www.w3.org/2000/svg"
+              className="text-white"
+            >
+              <path
+                d="M32.9582 1L18.9291 10.5986L21.2916 5.02242L32.9582 1Z"
+                fill="#E17726"
+                stroke="#E17726"
+                strokeWidth="0.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M2.04187 1L15.9081 10.7218L13.7083 5.02242L2.04187 1Z"
+                fill="#E27625"
+                stroke="#E27625"
+                strokeWidth="0.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M28.2308 23.5584L24.7417 28.8935L32.3125 30.9153L34.4792 23.6817L28.2308 23.5584Z"
+                fill="#E27625"
+                stroke="#E27625"
+                strokeWidth="0.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+              <path
+                d="M0.541667 23.6817L2.69792 30.9153L10.2687 28.8935L6.77958 23.5584L0.541667 23.6817Z"
+                fill="#E27625"
+                stroke="#E27625"
+                strokeWidth="0.25"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+            <span>{isConnecting ? 'Connecting...' : 'Connect with MetaMask'}</span>
           </button>
 
           {typeof window.ethereum === 'undefined' && (
-            <p className="mt-6 text-base text-gray-500">
+            <p className="mt-8 text-lg text-gray-600">
               Don't have MetaMask?{' '}
               <a 
                 href="https://metamask.io/download/"
                 target="_blank"
                 rel="noopener noreferrer"
-                className="text-blue-600 hover:text-blue-800 underline"
+                className="text-blue-600 hover:text-blue-800 underline font-medium"
               >
                 Install it here
               </a>
@@ -107,8 +159,28 @@ const WalletConnect = ({ onConnect }) => {
           )}
         </div>
       </div>
+
+      <div className="fixed inset-0 -z-10 overflow-hidden">
+        <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-100 rounded-full opacity-20 animate-pulse"></div>
+        <div className="absolute bottom-1/4 right-1/3 w-48 h-48 bg-green-100 rounded-full opacity-20 animate-pulse delay-1000"></div>
+      </div>
     </div>
   );
 };
+
+const styles = `
+  @keyframes float {
+    0% { transform: translateY(0px); }
+    50% { transform: translateY(-20px); }
+    100% { transform: translateY(0px); }
+  }
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+`;
+
+const styleSheet = document.createElement("style");
+styleSheet.innerText = styles;
+document.head.appendChild(styleSheet);
 
 export default WalletConnect; 

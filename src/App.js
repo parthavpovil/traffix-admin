@@ -1,20 +1,48 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Sidebar from './components/layout/sidebar';
 import StatsCard from './components/dashboard/stats_card';
 import WalletConnect from './components/wallet/wallet_connect';
 import './App.css';
 import PendingReports from './components/reports/pending_reports';
 import VerifiedReports from './components/reports/verified_reports';
+import ContractService from './services/contract_service';
+import DashboardContent from './components/dashboard/dashboard_content';
 
 function App() {
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletAddress, setWalletAddress] = useState(null);
+  const [stats, setStats] = useState({
+    totalReports: '0',
+    verifiedCount: '0',
+    totalRewards: '0',
+    contractBalance: '0'
+  });
 
-  const stats = [
-    { title: 'Total Reports', value: '0', icon: '📝' },
-    { title: 'Verified Reports', value: '0', icon: '✅' },
-    { title: 'Total Rewards', value: '0 ETH', icon: '🏆' },
-    { title: 'Contract Balance', value: '0 ETH', icon: '💰' },
+  useEffect(() => {
+    if (walletAddress && activeTab === 'dashboard') {
+      loadStats();
+    }
+  }, [walletAddress, activeTab]);
+
+  const loadStats = async () => {
+    try {
+      const contractStats = await ContractService.getContractStats();
+      setStats({
+        totalReports: contractStats.totalReports.toString(),
+        verifiedCount: contractStats.verifiedCount.toString(),
+        totalRewards: `${contractStats.totalRewards} ETH`,
+        contractBalance: `${contractStats.contractBalance} ETH`
+      });
+    } catch (error) {
+      console.error('Error loading stats:', error);
+    }
+  };
+
+  const statsCards = [
+    { title: 'Total Reports', value: stats.totalReports, icon: '📝' },
+    { title: 'Verified Reports', value: stats.verifiedCount, icon: '✅' },
+    { title: 'Total Rewards', value: stats.totalRewards, icon: '🏆' },
+    { title: 'Contract Balance', value: stats.contractBalance, icon: '💰' },
   ];
 
   // Handle wallet connection
@@ -44,16 +72,19 @@ function App() {
 
         {/* Only show stats in dashboard */}
         {activeTab === 'dashboard' && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            {stats.map((stat, index) => (
-              <StatsCard
-                key={index}
-                title={stat.title}
-                value={stat.value}
-                icon={stat.icon}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              {statsCards.map((stat, index) => (
+                <StatsCard
+                  key={index}
+                  title={stat.title}
+                  value={stat.value}
+                  icon={stat.icon}
+                />
+              ))}
+            </div>
+            <DashboardContent stats={stats} />
+          </>
         )}
 
         <div className="bg-white rounded-lg shadow-md p-6">
