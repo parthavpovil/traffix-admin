@@ -15,11 +15,25 @@ const VerifiedReports = () => {
   const loadReports = async () => {
     try {
       setLoading(true);
+      setError(null);
+      
+      // Initialize contract if needed
+      if (!ContractService.contract) {
+        await ContractService.init();
+      }
+
+      console.log('Fetching verified reports...');
       const verifiedReports = await ContractService.getVerifiedReports();
-      setReports(verifiedReports);
+      console.log('Verified Reports:', verifiedReports);
+      
+      if (Array.isArray(verifiedReports)) {
+        setReports(verifiedReports);
+      } else {
+        throw new Error('Invalid response format from contract');
+      }
     } catch (err) {
-      setError('Failed to load reports. Please try again.');
-      console.error('Error loading reports:', err);
+      console.error('Error in loadReports:', err);
+      setError(`Failed to load reports: ${err.message}`);
     } finally {
       setLoading(false);
     }
