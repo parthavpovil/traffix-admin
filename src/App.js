@@ -7,8 +7,12 @@ import PendingReports from './components/reports/pending_reports';
 import VerifiedReports from './components/reports/verified_reports';
 import ContractService from './services/contract_service';
 import DashboardContent from './components/dashboard/dashboard_content';
+import AddressReports from './components/reports/address_reports';
+import { ThemeProvider } from './contexts/theme_context';
+import { useTheme } from './contexts/theme_context';
 
-function App() {
+function AppContent() {
+  const { isDarkMode } = useTheme();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [walletAddress, setWalletAddress] = useState(null);
   const [stats, setStats] = useState({
@@ -50,30 +54,62 @@ function App() {
     setWalletAddress(address);
   };
 
+  const handleDisconnect = () => {
+    setWalletAddress(null);
+    // Clear any stored data
+    setStats({
+      totalReports: '0',
+      verifiedCount: '0',
+      totalRewards: '0',
+      contractBalance: '0'
+    });
+  };
+
   // If wallet is not connected, show connect wallet screen
   if (!walletAddress) {
     return <WalletConnect onConnect={handleWalletConnect} />;
   }
 
   return (
-    <div className="flex min-h-screen bg-gray-100">
+    <div className={`flex min-h-screen ${
+      isDarkMode ? 'bg-gray-900' : 'bg-gradient-to-br from-gray-50 to-gray-100'
+    }`}>
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} />
       
-      <main className="flex-1 p-8">
+      <main className={`flex-1 p-6 md:p-8 overflow-auto ${
+        isDarkMode ? 'text-gray-100' : ''
+      }`}>
         {/* Wallet Info */}
-        <div className="flex justify-end mb-6">
-          <div className="bg-white px-4 py-2 rounded-lg shadow-sm flex items-center">
-            <span className="text-gray-600 mr-2">Connected:</span>
-            <span className="text-sm font-mono">
+        <div className="flex justify-end mb-8">
+          <div className={`group cursor-pointer ${
+            isDarkMode ? 'bg-gray-800 border-gray-700 hover:bg-gray-700' : 'bg-white border-gray-100 hover:bg-gray-50'
+          } px-6 py-3 rounded-xl shadow-sm flex items-center gap-3 border transition-colors duration-200`}
+          onClick={handleDisconnect}
+          title="Click to disconnect wallet"
+          >
+            <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+            <span className={`${
+              isDarkMode ? 'text-gray-300' : 'text-gray-600'
+            }`}>Connected:</span>
+            <span className={`font-mono text-sm ${
+              isDarkMode ? 'bg-gray-700 text-gray-200' : 'bg-gray-50 text-gray-600'
+            } px-3 py-1 rounded-lg`}>
               {`${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
+            </span>
+            
+            {/* Disconnect hint */}
+            <span className={`ml-2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 ${
+              isDarkMode ? 'text-red-400' : 'text-red-500'
+            }`}>
+              Disconnect
             </span>
           </div>
         </div>
 
-        {/* Only show stats in dashboard */}
+        {/* Dashboard Content */}
         {activeTab === 'dashboard' && (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+          <div className="space-y-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
               {statsCards.map((stat, index) => (
                 <StatsCard
                   key={index}
@@ -84,17 +120,31 @@ function App() {
               ))}
             </div>
             <DashboardContent stats={stats} />
-          </>
+          </div>
         )}
 
-        <div className="bg-white rounded-lg shadow-md p-6">
-          {activeTab === 'dashboard' && <h2>Dashboard Content</h2>}
+        {/* Other Tabs Content */}
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
           {activeTab === 'pending' && <PendingReports />}
           {activeTab === 'verified' && <VerifiedReports />}
-          {activeTab === 'contract' && <h2>Contract Management</h2>}
+          {activeTab === 'search' && <AddressReports />}
+          {activeTab === 'contract' && (
+            <div className="p-8">
+              <h2 className="text-2xl font-bold text-gray-800 mb-6">Contract Management</h2>
+              {/* Contract management content */}
+            </div>
+          )}
         </div>
       </main>
     </div>
+  );
+}
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 
