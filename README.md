@@ -2,7 +2,7 @@
 
 A decentralized traffic reporting system dashboard that allows administrators to manage and verify traffic-related reports submitted by users.
 
-![Traffix Dashboard]
+![Traffix Dashboard](./screenshots/dashboard.jpg)
 
 ## 🌟 Features
 
