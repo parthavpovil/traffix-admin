@@ -101,7 +101,7 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 👥 Contact
 
-Parthav - [@parthav_](https://twitter.com/yourtwitter)
+Parthav - [@parthav_](https://x.com/parthav_?t=-W93Pb43jl8kgoI6Lkf9YA&s=08)
 
 
 ## 🙏 Acknowledgments
