@@ -101,8 +101,8 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md
 
 ## 👥 Contact
 
-Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
-Project Link: [https://github.com/yourusername/traffix-dashboard](https://github.com/yourusername/traffix-dashboard)
+Parthav - [@parthav_](https://twitter.com/yourtwitter)
+
 
 ## 🙏 Acknowledgments
 
