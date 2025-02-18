@@ -1,70 +1,118 @@
-# Getting Started with Create React App
+# Traffix Dashboard 🚦
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A decentralized traffic reporting system dashboard that allows administrators to manage and verify traffic-related reports submitted by users.
 
-## Available Scripts
+![Traffix Dashboard]
 
-In the project directory, you can run:
+## 🌟 Features
 
-### `npm start`
+### Authentication & Security
+- MetaMask wallet integration for secure authentication
+- Contract owner verification
+- Secure wallet connection and disconnection
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### Dashboard Overview
+- Real-time statistics display
+  - Total reports submitted
+  - Number of verified reports
+  - Total rewards distributed
+  - Current contract balance
+- Interactive charts and visualizations
+  - Reports distribution (Verified vs Pending)
+  - Monthly reporting trends
+- Recent activity feed
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+### Report Management
+- View pending reports awaiting verification
+- Access verified report history
+- Search reports by reporter's wallet address
+- Verify and process user-submitted reports
 
-### `npm test`
+### User Interface
+- Clean, modern interface with intuitive navigation
+- Dark/Light mode support
+- Responsive design for all screen sizes
+- Real-time updates and notifications
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## 🛠 Technology Stack
 
-### `npm run build`
+- **Frontend Framework**: React.js
+- **Styling**: Tailwind CSS
+- **Blockchain Integration**: Ethers.js
+- **Charts**: Recharts
+- **State Management**: React Context API
+- **Wallet Integration**: MetaMask
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+## 🚀 Getting Started
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. **Prerequisites**
+   ```bash
+   - Node.js (v14 or higher)
+   - MetaMask browser extension
+   - Access to Ethereum network (testnet or mainnet)
+   ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. **Installation**
+   ```bash
+   # Clone the repository
+   git clone https://github.com/yourusername/traffix-dashboard.git
 
-### `npm run eject`
+   # Navigate to project directory
+   cd traffix-dashboard
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+   # Install dependencies
+   npm install
+   ```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+3. **Configuration**
+   ```javascript
+   // Create .env file in root directory
+   REACT_APP_CONTRACT_ADDRESS=your_contract_address
+   REACT_APP_NETWORK_ID=your_network_id
+   ```
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+4. **Running the Application**
+   ```bash
+   # Start development server
+   npm start
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+   # Build for production
+   npm run build
+   ```
 
-## Learn More
+## 🔒 Security
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+- Only the contract owner can access the dashboard
+- Secure wallet connection handling
+- Protected routes and authenticated API calls
+- Input validation and sanitization
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## 🤝 Contributing
 
-### Code Splitting
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## 📜 License
 
-### Analyzing the Bundle Size
+This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+## 👥 Contact
 
-### Making a Progressive Web App
+Your Name - [@yourtwitter](https://twitter.com/yourtwitter)
+Project Link: [https://github.com/yourusername/traffix-dashboard](https://github.com/yourusername/traffix-dashboard)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 🙏 Acknowledgments
 
-### Advanced Configuration
+- [Ethereum](https://ethereum.org/)
+- [MetaMask](https://metamask.io/)
+- [React](https://reactjs.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Recharts](https://recharts.org/)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+---
 
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+<p align="center">
+  Made with ❤️ Parthav</p>
