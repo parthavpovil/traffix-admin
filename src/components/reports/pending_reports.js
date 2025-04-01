@@ -58,7 +58,9 @@ const PendingReports = () => {
       }
       
       // Verify the report with the specified reward
-      await ContractService.verifyReport(report.id, rewardValue);
+      // The ContractService.verifyReport method handles contract initialization and ownership checking
+      const tx = await ContractService.verifyReport(report.id, rewardValue);
+      console.log('Verification transaction completed:', tx);
       
       // Update status and reload reports to reflect changes
       setVerificationStatus({ 
@@ -76,9 +78,28 @@ const PendingReports = () => {
       
     } catch (err) {
       console.error('Error verifying report:', err);
+      
+      // Format a more user-friendly error message
+      let errorMessage = err.message || 'Unknown error occurred';
+      
+      // Check for common errors
+      if (errorMessage.includes('insufficient funds')) {
+        errorMessage = 'Insufficient funds to send the reward. Please add more ETH to your wallet.';
+      } else if (errorMessage.includes('user rejected')) {
+        errorMessage = 'Transaction was rejected in your wallet.';
+      } else if (errorMessage.toLowerCase().includes('execution reverted')) {
+        errorMessage = 'Transaction failed - verify you are the contract owner and the report exists.';
+      } else if (errorMessage.includes('already verified')) {
+        errorMessage = 'This report has already been verified.';
+      } else if (errorMessage.includes('not the owner')) {
+        errorMessage = 'Only the contract owner can verify reports.';
+      } else if (errorMessage.includes('wallet connection') || errorMessage.includes('MetaMask')) {
+        errorMessage = 'Wallet connection issue. Please reload the page and reconnect your wallet.';
+      }
+      
       setVerificationStatus({ 
         type: 'error', 
-        message: `Verification failed: ${err.message}` 
+        message: `Verification failed: ${errorMessage}` 
       });
     } finally {
       setVerifying(false);

@@ -67,6 +67,7 @@ class ContractService {
   constructor() {
     this.contract = null;
     this.provider = null;
+    this.signer = null;
   }
 
   async init() {
@@ -75,28 +76,82 @@ class ContractService {
     }
 
     try {
+      console.log('Initializing contract service...');
+      
+      // Request accounts from MetaMask
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      if (!accounts || accounts.length === 0) {
+        throw new Error('No accounts found. Please connect your wallet.');
+      }
+      
+      console.log('Connected accounts:', accounts);
+      
+      // Create provider
       this.provider = new ethers.BrowserProvider(window.ethereum);
-      const signer = await this.provider.getSigner();
+      
+      // Get signer and save as property
+      this.signer = await this.provider.getSigner();
+      console.log('Signer address:', await this.signer.getAddress());
       
       // Create contract instance without checksum validation
       this.contract = new ethers.Contract(
         CONTRACT_ADDRESS,
         CONTRACT_ABI,
-        signer
+        this.signer
       );
+      
+      console.log('Contract initialized at address:', CONTRACT_ADDRESS);
+      
+      // Verify the contract exists
+      const code = await this.provider.getCode(CONTRACT_ADDRESS);
+      if (code === '0x') {
+        throw new Error('No contract code found at the specified address: ' + CONTRACT_ADDRESS);
+      }
+      
+      return this.contract;
     } catch (error) {
       console.error('Error initializing contract:', error);
+      this.provider = null;
+      this.signer = null;
+      this.contract = null;
       throw error;
     }
   }
 
   async checkOwnership(address) {
-    if (!this.contract) {
-      await this.init();
-    }
     try {
-      const owner = await this.contract.owner();
-      return owner.toLowerCase() === address.toLowerCase();
+      if (!this.contract) {
+        await this.init();
+      }
+
+      // Make sure we have a valid provider and contract
+      if (!this.provider || !this.contract) {
+        console.error('Provider or contract not initialized');
+        return false;
+      }
+
+      // Make sure the address is valid
+      if (!address || typeof address !== 'string') {
+        console.error('Invalid address provided to checkOwnership:', address);
+        return false;
+      }
+
+      // Try to call the owner function
+      try {
+        const owner = await this.contract.owner();
+        console.log('Contract owner address:', owner);
+        console.log('Current user address:', address);
+        return owner.toLowerCase() === address.toLowerCase();
+      } catch (ownerError) {
+        console.error('Error calling owner() function:', ownerError);
+        // If the function call fails, consider checking the contract code as a fallback
+        const code = await this.provider.getCode(this.contract.target);
+        if (code === '0x') {
+          throw new Error('No contract code found at the specified address');
+        }
+        // Since we can't verify ownership, return false
+        return false;
+      }
     } catch (error) {
       console.error('Error checking ownership:', error);
       return false;
@@ -248,6 +303,61 @@ class ContractService {
     } catch (error) {
       console.error('Error withdrawing funds:', error);
       throw error;
+    }
+  }
+
+  async verifyReport(reportId, rewardAmount) {
+    try {
+      console.log(`Attempting to verify report ${reportId} with reward ${rewardAmount} ETH`);
+      
+      // Make sure contract is initialized
+      if (!this.contract) {
+        console.log('Contract not initialized, initializing now...');
+        await this.init();
+      }
+      
+      // Double-check that we have a valid contract and signer
+      if (!this.contract || !this.signer) {
+        throw new Error('Contract or signer not properly initialized. Please check your wallet connection.');
+      }
+      
+      // Convert the ETH amount to wei
+      const rewardInWei = ethers.parseEther(rewardAmount.toString());
+      console.log(`Reward in wei: ${rewardInWei.toString()}`);
+      
+      // Verify the current user is the owner
+      const currentAddress = await this.signer.getAddress();
+      const isOwner = await this.checkOwnership(currentAddress);
+      if (!isOwner) {
+        throw new Error('Only the contract owner can verify reports.');
+      }
+      
+      // Call the contract's verifyReport function with the proper parameters
+      // Since this is a payable function, we need to include value in the transaction
+      console.log(`Sending transaction to verify report ${reportId} with ${rewardInWei} wei...`);
+      const tx = await this.contract.verifyReport(reportId, rewardInWei, {
+        value: rewardInWei
+      });
+      
+      console.log('Verification transaction sent:', tx.hash);
+      
+      // Wait for transaction to be mined
+      const receipt = await tx.wait();
+      console.log('Verification confirmed in block:', receipt.blockNumber);
+      
+      return receipt;
+    } catch (error) {
+      console.error('Error verifying report:', error);
+      // Enhance error message
+      if (error.message.includes('user rejected')) {
+        throw new Error('Transaction was rejected in your wallet');
+      } else if (error.message.includes('insufficient funds')) {
+        throw new Error('Insufficient funds to send the reward');
+      } else if (error.message.toLowerCase().includes('already verified')) {
+        throw new Error('This report has already been verified');
+      } else {
+        throw error;
+      }
     }
   }
 }
