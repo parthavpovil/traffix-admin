@@ -125,13 +125,17 @@ function AppContent() {
         )}
 
         {/* Other Tabs Content */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100">
+        <div className={`${
+          isDarkMode ? 'bg-gray-800 border-gray-700' : 'bg-white border-gray-100'
+        } rounded-xl shadow-sm border`}>
           {activeTab === 'pending' && <PendingReports />}
           {activeTab === 'verified' && <VerifiedReports />}
           {activeTab === 'search' && <AddressReports />}
           {activeTab === 'contract' && (
             <div className="p-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">Contract Management</h2>
+              <h2 className={`text-2xl font-bold mb-6 ${
+                isDarkMode ? 'text-gray-100' : 'text-gray-800'
+              }`}>Contract Management</h2>
               <WithdrawForm />
             </div>
           )}
