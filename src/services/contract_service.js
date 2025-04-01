@@ -216,6 +216,42 @@ class ContractService {
       throw error;
     }
   }
+
+  async getContractBalance() {
+    try {
+      if (!this.contract || !this.provider) {
+        console.log('Contract or provider not initialized, initializing now');
+        await this.init();
+      }
+
+      if (!this.contract || !this.provider) {
+        throw new Error('Failed to initialize contract or provider');
+      }
+
+      console.log('Fetching balance for contract address:', this.contract.target);
+      const balance = await this.provider.getBalance(this.contract.target);
+      console.log('Raw contract balance:', balance.toString());
+      return balance;
+    } catch (error) {
+      console.error('Error getting contract balance:', error);
+      throw error;
+    }
+  }
+
+  async withdraw(amount) {
+    if (!this.contract) {
+      await this.init();
+    }
+    try {
+      const tx = await this.contract.withdraw(amount);
+      await tx.wait();
+    } catch (error) {
+      console.error('Error withdrawing funds:', error);
+      throw error;
+    }
+  }
 }
 
-export default new ContractService(); 
+// Export the instance of ContractService
+const contractServiceInstance = new ContractService();
+export default contractServiceInstance;

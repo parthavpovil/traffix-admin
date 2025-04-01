@@ -10,6 +10,7 @@ import DashboardContent from './components/dashboard/dashboard_content';
 import AddressReports from './components/reports/address_reports';
 import { ThemeProvider } from './contexts/theme_context';
 import { useTheme } from './contexts/theme_context';
+import WithdrawForm from './components/contract/WithdrawForm';
 
 function AppContent() {
   const { isDarkMode } = useTheme();
@@ -131,7 +132,7 @@ function AppContent() {
           {activeTab === 'contract' && (
             <div className="p-8">
               <h2 className="text-2xl font-bold text-gray-800 mb-6">Contract Management</h2>
-              {/* Contract management content */}
+              <WithdrawForm />
             </div>
           )}
         </div>
